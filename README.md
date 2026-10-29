@@ -24,6 +24,12 @@ A Spring Boot CRUD REST API for managing students, containerized with Docker and
 docker-compose up --build
 ```
 
+## Additional Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | /api/students/count | Get total student count |
+
 ## Running Tests
 
 ```bash
