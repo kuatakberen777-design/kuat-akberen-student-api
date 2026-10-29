@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/students")
@@ -16,7 +17,8 @@ public class StudentController {
 
     @GetMapping
     public ResponseEntity<List<Student>> getAllStudents() {
-        return ResponseEntity.ok(studentService.getAllStudents());
+        List<Student> students = studentService.getAllStudents();
+        return ResponseEntity.ok(students);
     }
 
     @GetMapping("/{id}")
@@ -42,12 +44,19 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
+    public ResponseEntity<Map<String, String>> deleteStudent(@PathVariable Long id) {
         try {
             studentService.deleteStudent(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(Map.of("message", "Student with id " + id + " deleted successfully"));
         } catch (StudentNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", e.getMessage()));
         }
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Map<String, Long>> countStudents() {
+        long count = studentService.getAllStudents().size();
+        return ResponseEntity.ok(Map.of("total", count));
     }
 }
