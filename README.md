@@ -7,6 +7,7 @@
 ## Description
 
 A Spring Boot CRUD REST API for managing students, containerized with Docker and PostgreSQL.
+This project includes full documentation and deployment configuration.
 
 ## API Endpoints
 
@@ -18,6 +19,13 @@ A Spring Boot CRUD REST API for managing students, containerized with Docker and
 | PUT | /api/students/{id} | Update student information |
 | DELETE | /api/students/{id} | Delete a student |
 | GET | /api/students/count | Get total student count |
+
+## Architecture
+
+- **Backend:** Spring Boot 3.2 (Java 17)
+- **Database:** PostgreSQL 15
+- **Containerization:** Docker & Docker Compose
+- **CI/CD:** Jenkins Pipeline
 
 ## Running with Docker Compose
 
