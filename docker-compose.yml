@@ -1,0 +1,47 @@
+name: kuat-akberen-student-api
+
+services:
+  app:
+    image: kuat-akberen-student-api:v1.0-kuat-akberen
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kuat-akberen-app
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/studentdb
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - kuat-akberen-network
+    restart: on-failure
+
+  db:
+    image: postgres:15-alpine
+    container_name: kuat-akberen-db
+    environment:
+      - POSTGRES_DB=studentdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - kuat-akberen-pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - kuat-akberen-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d studentdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  kuat-akberen-network:
+    driver: bridge
+
+volumes:
+  kuat-akberen-pgdata:
