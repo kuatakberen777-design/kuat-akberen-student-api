@@ -1,0 +1,40 @@
+# Task 4.3 - controlled failure on branch test/kuat-akberen-pipeline-failure, not on main
+
+Error: the assertion in infoShowsStudentName() expected the student "Wrong Student".
+Effect: the Test stage failed (./gradlew test exited non-zero), Jenkins skipped Docker Build and Verify,
+and build #2 finished with FAILURE, so no image was built from the broken code.
+Fix: the commit was reverted with git revert and pushed; polling started build #3, which passed all stages.
+
+===== build #2 (failed) =====
+Started by an SCM change
+Checking out Revision 5a4adeca5658123e03824fb3b8e9eb1c88ab0268 (origin/test/kuat-akberen-pipeline-failure)
+Commit message: "test: introduce controlled failing assertion on test branch - Kuat Akberen"
+=== Kuat Akberen Student API Pipeline ===
+Building Spring Boot application for Kuat Akberen...
+Running automated tests for Kuat Akberen...
+StudentApiApplicationTests > infoShowsStudentName() FAILED
+    java.lang.AssertionError at StudentApiApplicationTests.java:50
+9 tests completed, 1 failed
+> Task :test FAILED
+BUILD FAILED in 4s
+Tests FAILED for Kuat Akberen — stopping pipeline.
+Stage "Docker Build" skipped due to earlier failure(s)
+Stage "Verify" skipped due to earlier failure(s)
+FAILURE: Kuat Akberen pipeline failed. Check console output above.
+Finished: FAILURE
+
+===== build #3 (fixed) =====
+Started by an SCM change
+Checking out Revision 08a2f8ebd402923b45027dd3926d84854d2083a2 (origin/test/kuat-akberen-pipeline-failure)
+Commit message: "test: fix controlled failing assertion on test branch - Kuat Akberen"
+=== Kuat Akberen Student API Pipeline ===
+Building Spring Boot application for Kuat Akberen...
+BUILD SUCCESSFUL in 2s
+Running automated tests for Kuat Akberen...
+BUILD SUCCESSFUL in 4s
+Successfully tagged kuat-akberen-student-api:v1.1-kuat-akberen
++ docker image inspect kuat-akberen-student-api:v1.1-kuat-akberen --format Image OK: {{.Id}} created {{.Created}} size {{.Size}} bytes
+Image OK: sha256:b3655798b7f5e6d49b3bdedcb091992dc1036f03971d6d249a179f7b852a0fde created 2026-10-30T13:30:19.29717542Z size 364971190 bytes
+Pipeline completed successfully for Kuat Akberen!
+SUCCESS: Kuat Akberen pipeline finished. Image: kuat-akberen-student-api:v1.1-kuat-akberen
+Finished: SUCCESS
