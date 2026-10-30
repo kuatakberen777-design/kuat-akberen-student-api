@@ -2,7 +2,7 @@ name: kuat-akberen-student-api
 
 services:
   app:
-    image: kuat-akberen-student-api:v1.0-kuat-akberen
+    image: kuat-akberen-student-api:${IMAGE_TAG:-v1.0-kuat-akberen}
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,9 +10,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=postgres
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/studentdb
+      - DB_USERNAME=${POSTGRES_USER:?set in .env}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:?set in .env}
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB:?set in .env}
     depends_on:
       db:
         condition: service_healthy
@@ -24,17 +24,15 @@ services:
     image: postgres:15-alpine
     container_name: kuat-akberen-db
     environment:
-      - POSTGRES_DB=studentdb
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=${POSTGRES_DB:?set in .env}
+      - POSTGRES_USER=${POSTGRES_USER:?set in .env}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?set in .env}
     volumes:
       - kuat-akberen-pgdata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
     networks:
       - kuat-akberen-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d studentdb"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 10s
       timeout: 5s
       retries: 5

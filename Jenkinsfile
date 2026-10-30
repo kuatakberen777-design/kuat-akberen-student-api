@@ -48,6 +48,7 @@ pipeline {
         stage('Verify') {
             steps {
                 echo "Verifying image ${env.IMAGE_NAME}:${env.IMAGE_TAG} exists..."
+                sh "docker image inspect ${env.IMAGE_NAME}:${env.IMAGE_TAG} --format 'Image OK: {{.Id}} created {{.Created}} size {{.Size}} bytes'"
                 sh "docker images ${env.IMAGE_NAME}:${env.IMAGE_TAG}"
                 echo "Pipeline completed successfully for ${env.STUDENT}!"
             }

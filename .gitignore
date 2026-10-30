@@ -20,4 +20,7 @@ Thumbs.db
 
 # Logs
 *.log
-logs/
+logs/*
+!logs/.gitkeep
+# Personal report and analysis are required submission evidence
+!logs/Kuat_Akberen_*
