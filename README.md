@@ -1,6 +1,6 @@
 # Kuat Akberen Student API
 
-**Student:** Kuat Akberen | **Status:** Tested
+**Student:** Kuat Akberen | **Status:** Tested and Documented
 **Repository:** kuat-akberen-student-api
 **Docker image:** kuat-akberen-student-api:v1.0-kuat-akberen
 **Jenkins job:** Kuat_Akberen_Student_API
