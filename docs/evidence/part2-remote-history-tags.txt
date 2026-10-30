@@ -1,0 +1,82 @@
+# Task 2.4 - remote repository, Kuat Akberen
+
+$ git remote -v
+origin	https://github.com/kuatakberen777-design/kuat-akberen-student-api.git (fetch)
+origin	https://github.com/kuatakberen777-design/kuat-akberen-student-api.git (push)
+
+$ git branch -a
+  feature/kuat-akberen-crud
+  feature/kuat-akberen-docker-ci
+  feature/kuat-akberen-documentation
+  feature/kuat-akberen-version-1.1
+* main
+  test/kuat-akberen-pipeline-failure
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/feature/kuat-akberen-crud
+  remotes/origin/feature/kuat-akberen-docker-ci
+  remotes/origin/feature/kuat-akberen-documentation
+  remotes/origin/feature/kuat-akberen-version-1.1
+  remotes/origin/main
+  remotes/origin/test/kuat-akberen-pipeline-failure
+
+$ git tag -n1
+v1.0-kuat-akberen fix: resolve merge conflict in README - combine status and architecture sections - Kuat Akberen
+v1.1-kuat-akberen Kuat Akberen Student API v1.1 - passed Jenkins build #4
+
+$ git log --graph --oneline --decorate --all -30
+* b1bee5a (HEAD -> main, tag: v1.1-kuat-akberen, origin/main, origin/HEAD) docs: record pipeline failure and fix for Kuat Akberen
+| * 08a2f8e (origin/test/kuat-akberen-pipeline-failure, test/kuat-akberen-pipeline-failure) test: fix controlled failing assertion on test branch - Kuat Akberen
+| * 5a4adec test: introduce controlled failing assertion on test branch - Kuat Akberen
+|/  
+* 6c45582 docs: add Linux, Git and Docker evidence for Kuat Akberen
+*   fcacd6e Merge branch 'feature/kuat-akberen-version-1.1' into main - Kuat Akberen
+|\  
+| * 7631d11 (origin/feature/kuat-akberen-version-1.1, feature/kuat-akberen-version-1.1) chore: bump application and image version to 1.1 - Kuat Akberen
+|/  
+*   289d4c3 fix: resolve README status conflict manually - Kuat Akberen
+|\  
+| * 0dbf883 (origin/feature/kuat-akberen-documentation, feature/kuat-akberen-documentation) docs: set README status to Documented - Kuat Akberen
+* | 3b86666 docs: set README status to Tested - Kuat Akberen
+|/  
+*   e29249c Merge branch 'feature/kuat-akberen-docker-ci' into main - Kuat Akberen
+|\  
+| * 8204e15 (origin/feature/kuat-akberen-docker-ci, feature/kuat-akberen-docker-ci) chore: move DB credentials to .env and harden Docker and CI setup - Kuat Akberen
+|/  
+*   027e143 Merge branch 'feature/kuat-akberen-crud' into main - Kuat Akberen
+|\  
+| * ace807f (origin/feature/kuat-akberen-crud, feature/kuat-akberen-crud) docs: describe CRUD changes by Kuat Akberen in README
+| * f61015f feat: validate student input and return JSON errors in CRUD API - Kuat Akberen
+| * 13e3642 fix: restore Gradle wrapper and add validation dependency - Kuat Akberen
+|/  
+* 2b072c7 feat: add system report script and backup - Kuat Akberen
+*   da59e4e (tag: v1.0-kuat-akberen) fix: resolve merge conflict in README - combine status and architecture sections - Kuat Akberen
+|\  
+| * 6f61f34 docs: add architecture section and branch info - Kuat Akberen documentation
+* | 46dc7a4 docs: mark project as production ready on main
+|/  
+* fe622dd docs: add student status to README on main
+*   0e9165e Merge branch 'feature/kuat-akberen-crud' into main
+|\  
+| * c5b53e2 docs: add count endpoint to README - Kuat Akberen CRUD feature
+| * 1886524 feat: improve DELETE response and add count endpoint - Kuat Akberen
+|/  
+* 10c7ce0 Initial commit: Kuat Akberen Student API
+
+$ git log --format="%h %an <%ae> %s" -14
+b1bee5a Kuat Akberen <kuatakberen777@gmail.com> docs: record pipeline failure and fix for Kuat Akberen
+6c45582 Kuat Akberen <kuatakberen777@gmail.com> docs: add Linux, Git and Docker evidence for Kuat Akberen
+fcacd6e Kuat Akberen <kuatakberen777@gmail.com> Merge branch 'feature/kuat-akberen-version-1.1' into main - Kuat Akberen
+7631d11 Kuat Akberen <kuatakberen777@gmail.com> chore: bump application and image version to 1.1 - Kuat Akberen
+289d4c3 Kuat Akberen <kuatakberen777@gmail.com> fix: resolve README status conflict manually - Kuat Akberen
+3b86666 Kuat Akberen <kuatakberen777@gmail.com> docs: set README status to Tested - Kuat Akberen
+0dbf883 Kuat Akberen <kuatakberen777@gmail.com> docs: set README status to Documented - Kuat Akberen
+e29249c Kuat Akberen <kuatakberen777@gmail.com> Merge branch 'feature/kuat-akberen-docker-ci' into main - Kuat Akberen
+027e143 Kuat Akberen <kuatakberen777@gmail.com> Merge branch 'feature/kuat-akberen-crud' into main - Kuat Akberen
+8204e15 Kuat Akberen <kuatakberen777@gmail.com> chore: move DB credentials to .env and harden Docker and CI setup - Kuat Akberen
+ace807f Kuat Akberen <kuatakberen777@gmail.com> docs: describe CRUD changes by Kuat Akberen in README
+f61015f Kuat Akberen <kuatakberen777@gmail.com> feat: validate student input and return JSON errors in CRUD API - Kuat Akberen
+13e3642 Kuat Akberen <kuatakberen777@gmail.com> fix: restore Gradle wrapper and add validation dependency - Kuat Akberen
+2b072c7 Akberen Kuat <sulmir05@gmail.com> feat: add system report script and backup - Kuat Akberen
+
+$ git check-ignore -v .env
+.gitignore:14:*.env	.env
