@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.kuatakberen'
-version = '1.0-kuat-akberen'
+version = '1.1-kuat-akberen'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17

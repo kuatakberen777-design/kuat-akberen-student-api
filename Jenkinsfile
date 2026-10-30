@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'kuat-akberen-student-api'
-        IMAGE_TAG  = 'v1.0-kuat-akberen'
+        IMAGE_TAG  = 'v1.1-kuat-akberen'
         STUDENT    = 'Kuat Akberen'
     }
 
