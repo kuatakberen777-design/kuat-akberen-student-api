@@ -1,0 +1,129 @@
+# Part 1 - Linux administration, Kuat Akberen
+--- Task 1.1
+
+$ mkdir -p scripts logs backups src
+
+$ touch logs/Kuat_Akberen_system_report.log
+
+$ ls -la logs/Kuat_Akberen_system_report.log   # empty log, size 0
+-rw-r--r--  1 akberenkuat  staff  0 Oct 30 18:31 logs/Kuat_Akberen_system_report.log
+
+$ find . -maxdepth 2 -not -path './.git*' -not -path './.gradle*' -not -path './build*' -not -path './docs/*' | sort
+.
+./.dockerignore
+./.env
+./.env.example
+./Dockerfile
+./Jenkinsfile
+./README.md
+./backups
+./backups/README_Kuat_Akberen_backup.md
+./docker-compose.yml
+./docs
+./gradle
+./gradle/wrapper
+./gradlew
+./gradlew.bat
+./logs
+./logs/.gitkeep
+./logs/Kuat_Akberen_system_report.log
+./scripts
+./scripts/Kuat_Akberen_system_report.sh
+./settings.gradle
+./src
+./src/main
+./src/test
+
+$ for f in scripts logs backups src Dockerfile docker-compose.yml Jenkinsfile build.gradle README.md; do [ -e "$f" ] && echo "OK $f" || echo "MISSING $f"; done
+OK scripts
+OK logs
+OK backups
+OK src
+OK Dockerfile
+OK docker-compose.yml
+OK Jenkinsfile
+OK build.gradle
+OK README.md
+
+--- Task 1.2
+
+$ ./scripts/Kuat_Akberen_system_report.sh
+============================================
+  Student: Kuat Akberen
+============================================
+Date and Time : Fri Oct 30 18:31:17 +05 2026
+Username      : akberenkuat
+OS            : macOS 15.6.1
+Kernel        : Darwin 24.6.0
+--------------------------------------------
+CPU Info      :
+Apple M4
+--------------------------------------------
+Memory Info   :
+Total: 16 GB
+Mach Virtual Memory Statistics: (page size of 16384 bytes)
+Pages free:                                5720.
+Pages active:                            296631.
+Pages inactive:                          295239.
+Pages speculative:                          216.
+--------------------------------------------
+Disk Usage    :
+Filesystem        Size    Used   Avail Capacity iused ifree %iused  Mounted on
+/dev/disk3s1s1   460Gi    14Gi   128Gi    10%    426k  1.3G    0%   /
+--------------------------------------------
+Available Disk Space (/) : 128Gi
+============================================
+
+Report saved to: ~/devops/kuat-akberen-student-api/logs/Kuat_Akberen_system_report.log
+
+--- Task 1.3
+
+$ chmod 744 scripts/Kuat_Akberen_system_report.sh
+
+$ ls -l scripts/Kuat_Akberen_system_report.sh   # owner rwx, group and others read-only
+-rwxr--r--  1 akberenkuat  staff  1543 Oct 30 18:02 scripts/Kuat_Akberen_system_report.sh
+
+$ cp README.md backups/README_Kuat_Akberen_backup.md
+
+$ ls -l backups/README_Kuat_Akberen_backup.md
+-rw-r--r--  1 akberenkuat  staff  2620 Oct 30 18:31 backups/README_Kuat_Akberen_backup.md
+
+$ diff README.md backups/README_Kuat_Akberen_backup.md && echo 'Backup is identical to README.md'
+Backup is identical to README.md
+
+$ head -3 backups/README_Kuat_Akberen_backup.md
+# Kuat Akberen Student API
+
+**Student:** Kuat Akberen | **Status:** Tested and Documented
+
+--- Task 1.4
+
+$ ps -eo pid,comm | grep -i '[j]ava' | sed -E 's#/Users/[^ ]*/##' | cut -c1-80 || echo 'no host java process'
+
+$ docker top kuat-akberen-app -o pid,comm   # Spring Boot JVM in the container
+PID                 COMMAND
+31327               java
+
+$ tail -n 5 logs/Kuat_Akberen_system_report.log
+Filesystem        Size    Used   Avail Capacity iused ifree %iused  Mounted on
+/dev/disk3s1s1   460Gi    14Gi   128Gi    10%    426k  1.3G    0%   /
+--------------------------------------------
+Available Disk Space (/) : 128Gi
+============================================
+
+$ grep -n 'Kuat' logs/Kuat_Akberen_system_report.log
+2:  Student: Kuat Akberen
+
+$ grep -n 'Kuat' logs/Kuat_Akberen_system_report.log > logs/Kuat_Akberen_log_analysis.txt
+
+$ cat logs/Kuat_Akberen_log_analysis.txt
+2:  Student: Kuat Akberen
+
+--- > and >>
+
+$ echo one > d.txt; echo two > d.txt; cat d.txt   # > overwrites
+two
+
+$ echo one > d.txt; echo two >> d.txt; cat d.txt   # >> appends
+one
+two

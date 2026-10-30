@@ -1,0 +1,44 @@
+$ git switch feature/kuat-akberen-documentation && git merge --ff-only main
+e29249c Merge branch 'feature/kuat-akberen-docker-ci' into main - Kuat Akberen
+$ git switch main   # change the same line differently
+$ git merge feature/kuat-akberen-documentation
+Auto-merging README.md
+CONFLICT (content): Merge conflict in README.md
+Automatic merge failed; fix conflicts and then commit the result.
+$ git status --short --branch
+## main...origin/main [ahead 7]
+UU README.md
+?? docs/
+$ sed -n 1,9p README.md   # conflict markers
+# Kuat Akberen Student API
+
+<<<<<<< HEAD
+**Student:** Kuat Akberen | **Status:** Tested
+=======
+**Student:** Kuat Akberen | **Status:** Documented
+>>>>>>> feature/kuat-akberen-documentation
+**Repository:** kuat-akberen-student-api
+**Docker image:** kuat-akberen-student-api:v1.0-kuat-akberen
+$ # manual resolution: both statuses kept
+**Student:** Kuat Akberen | **Status:** Tested and Documented
+$ git add README.md && git commit
+$ git log --graph --oneline --all -12
+*   289d4c3 fix: resolve README status conflict manually - Kuat Akberen
+|\  
+| * 0dbf883 docs: set README status to Documented - Kuat Akberen
+* | 3b86666 docs: set README status to Tested - Kuat Akberen
+|/  
+*   e29249c Merge branch 'feature/kuat-akberen-docker-ci' into main - Kuat Akberen
+|\  
+| * 8204e15 chore: move DB credentials to .env and harden Docker and CI setup - Kuat Akberen
+|/  
+*   027e143 Merge branch 'feature/kuat-akberen-crud' into main - Kuat Akberen
+|\  
+| * ace807f docs: describe CRUD changes by Kuat Akberen in README
+| * f61015f feat: validate student input and return JSON errors in CRUD API - Kuat Akberen
+| * 13e3642 fix: restore Gradle wrapper and add validation dependency - Kuat Akberen
+|/  
+* 2b072c7 feat: add system report script and backup - Kuat Akberen
+*   da59e4e fix: resolve merge conflict in README - combine status and architecture sections - Kuat Akberen
+|\  
+| * 6f61f34 docs: add architecture section and branch info - Kuat Akberen documentation

@@ -1,0 +1,71 @@
+# Task 3.4 - API testing, Kuat Akberen, base URL http://localhost:8080
+
+$ curl -s -w "
+HTTP %{http_code}
+" -H "Content-Type: application/json" http://localhost:8080/api/info
+{"version":"1.0-kuat-akberen","student":"Kuat Akberen","project":"kuat-akberen-student-api"}
+HTTP 200
+
+
+$ curl -s -w "
+HTTP %{http_code}
+" -H "Content-Type: application/json" -X POST http://localhost:8080/api/students -d '{"name":"Kuat Akberen","email":"kuat.akberen@example.com","age":21}'
+{"id":2,"name":"Kuat Akberen","email":"kuat.akberen@example.com","age":21}
+HTTP 201
+
+
+$ curl -s -w "
+HTTP %{http_code}
+" -H "Content-Type: application/json" http://localhost:8080/api/students
+[{"id":1,"name":"Kuat Akberen","email":"akberen.kuat@student.test","age":20},{"id":2,"name":"Kuat Akberen","email":"kuat.akberen@example.com","age":21}]
+HTTP 200
+
+
+$ curl -s -w "
+HTTP %{http_code}
+" -H "Content-Type: application/json" http://localhost:8080/api/students/2
+{"id":2,"name":"Kuat Akberen","email":"kuat.akberen@example.com","age":21}
+HTTP 200
+
+
+$ curl -s -w "
+HTTP %{http_code}
+" -H "Content-Type: application/json" -X PUT http://localhost:8080/api/students/2 -d '{"name":"Kuat Akberen Updated","email":"kuat.akberen@example.com","age":22}'
+{"id":2,"name":"Kuat Akberen Updated","email":"kuat.akberen@example.com","age":22}
+HTTP 200
+
+
+$ curl -s -w "
+HTTP %{http_code}
+" -H "Content-Type: application/json" -X POST http://localhost:8080/api/students -d '{"name":"Temp Kuat","email":"temp.kuat@example.com","age":19}'
+{"id":3,"name":"Temp Kuat","email":"temp.kuat@example.com","age":19}
+HTTP 201
+
+
+$ curl -s -w "
+HTTP %{http_code}
+" -H "Content-Type: application/json" -X DELETE http://localhost:8080/api/students/3
+{"message":"Student with id 3 deleted successfully"}
+HTTP 200
+
+
+$ curl -s -w "
+HTTP %{http_code}
+" -H "Content-Type: application/json" http://localhost:8080/api/students/3   # deleted student
+{"error":"Student not found with id: 3"}
+HTTP 404
+
+
+$ curl -s -w "
+HTTP %{http_code}
+" -H "Content-Type: application/json" http://localhost:8080/api/students/99999   # nonexistent student
+{"error":"Student not found with id: 99999"}
+HTTP 404
+
+
+$ curl -s -w "
+HTTP %{http_code}
+" -H "Content-Type: application/json" -X POST http://localhost:8080/api/students -d '{"name":"","email":"bad","age":0}'   # invalid data
+{"error":"age: Age must be positive, email: Invalid email format, name: Name is required"}
+HTTP 400
+

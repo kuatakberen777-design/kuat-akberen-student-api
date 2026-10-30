@@ -1,0 +1,41 @@
+
+$ DOCKER_BUILDKIT=0 docker build -t kuat-akberen-student-api:v1.0-kuat-akberen . | tail -6
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            BuildKit is currently disabled; enable it by removing the DOCKER_BUILDKIT=0
+            environment-variable.
+
+Step 11/11 : ENTRYPOINT ["java", "-jar", "app.jar"]
+ ---> Running in 77d4d4982113
+ ---> Removed intermediate container 77d4d4982113
+ ---> 7457e94e7c6f
+Successfully built 7457e94e7c6f
+Successfully tagged kuat-akberen-student-api:v1.0-kuat-akberen
+
+$ docker images kuat-akberen-student-api
+WARNING: This output is designed for human readability. For machine-readable output, please use --format.
+IMAGE                                        ID             DISK USAGE   CONTENT SIZE   EXTRA
+kuat-akberen-student-api:v1.0-kuat-akberen   7457e94e7c6f        365MB             0B        
+
+$ docker image inspect kuat-akberen-student-api:v1.0-kuat-akberen --format 'created={{.Created}} size={{.Size}} arch={{.Architecture}} exposed={{json .Config.ExposedPorts}} entrypoint={{json .Config.Entrypoint}}'
+created=2026-10-30T13:26:43.999322584Z size=364971190 arch=arm64 exposed={"8080/tcp":{}} entrypoint=["java","-jar","app.jar"]
+
+$ docker compose up -d --no-build
+ Network kuat-akberen-student-api_kuat-akberen-network Creating 
+ Network kuat-akberen-student-api_kuat-akberen-network Created 
+ Volume kuat-akberen-student-api_kuat-akberen-pgdata Creating 
+ Volume kuat-akberen-student-api_kuat-akberen-pgdata Created 
+ Container kuat-akberen-db Creating 
+ Container kuat-akberen-db Created 
+ Container kuat-akberen-app Creating 
+ Container kuat-akberen-app Created 
+ Container kuat-akberen-db Starting 
+ Container kuat-akberen-db Started 
+ Container kuat-akberen-db Waiting 
+ Container kuat-akberen-db Healthy 
+ Container kuat-akberen-app Starting 
+ Container kuat-akberen-app Started 
+
+$ docker compose ps
+NAME               IMAGE                                        COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+kuat-akberen-app   kuat-akberen-student-api:v1.0-kuat-akberen   "java -jar app.jar"      app       35 seconds ago   Up 25 seconds             0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
+kuat-akberen-db    postgres:15-alpine                           "docker-entrypoint.s…"   db        35 seconds ago   Up 35 seconds (healthy)   5432/tcp

@@ -1,0 +1,132 @@
+# Task 3.3 - container management, Kuat Akberen
+
+$ docker ps --filter name=kuat-akberen --format "table {{.Names}}	{{.Image}}	{{.Status}}	{{.Ports}}"
+NAMES              IMAGE                                        STATUS                    PORTS
+kuat-akberen-app   kuat-akberen-student-api:v1.0-kuat-akberen   Up 46 seconds             0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
+kuat-akberen-db    postgres:15-alpine                           Up 57 seconds (healthy)   5432/tcp
+
+
+$ docker logs --tail 6 kuat-akberen-app | cut -c1-150
+2026-10-30T13:26:56.311Z  WARN 1 --- [kuat-akberen-student-api] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view i
+2026-10-30T13:26:56.416Z  INFO 1 --- [kuat-akberen-student-api] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 80
+2026-10-30T13:26:56.421Z  INFO 1 --- [kuat-akberen-student-api] [           main] c.k.studentapi.StudentApiApplication     : Started StudentApiApplica
+2026-10-30T13:27:20.046Z  INFO 1 --- [kuat-akberen-student-api] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring Dispa
+2026-10-30T13:27:20.046Z  INFO 1 --- [kuat-akberen-student-api] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dis
+2026-10-30T13:27:20.047Z  INFO 1 --- [kuat-akberen-student-api] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization 
+
+
+$ docker inspect kuat-akberen-app --format 'image={{.Config.Image}} state={{.State.Status}} restart={{.HostConfig.RestartPolicy.Name}} networks={{range $k,$v := .NetworkSettings.Networks}}{{$k}}{{end}} ports={{json .HostConfig.PortBindings}}'
+image=kuat-akberen-student-api:v1.0-kuat-akberen state=running restart=on-failure networks=kuat-akberen-student-api_kuat-akberen-network ports={"8080/tcp":[{"HostIp":"","HostPort":"8080"}]}
+
+
+$ docker inspect kuat-akberen-db --format 'health={{.State.Health.Status}} mounts={{range .Mounts}}{{.Name}}->{{.Destination}}{{end}}'
+health=healthy mounts=kuat-akberen-student-api_kuat-akberen-pgdata->/var/lib/postgresql/data
+
+
+$ docker exec kuat-akberen-app sh -c 'pwd; ls -la /app; java -version; echo $SPRING_DATASOURCE_URL'
+/app
+total 45336
+drwxr-xr-x 1 root root     4096 Oct 30 13:26 .
+drwxr-xr-x 1 root root     4096 Oct 30 13:26 ..
+-rw-r--r-- 1 root root 46411997 Oct 30 13:26 app.jar
+openjdk version "17.0.20.1" 2026-08-18
+OpenJDK Runtime Environment Temurin-17.0.20.1+1 (build 17.0.20.1+1)
+OpenJDK 64-Bit Server VM Temurin-17.0.20.1+1 (build 17.0.20.1+1, mixed mode, sharing)
+jdbc:postgresql://db:5432/studentdb
+
+
+$ docker compose stop app
+ Container kuat-akberen-app Stopping 
+ Container kuat-akberen-app Stopped 
+
+
+$ docker compose ps -a --format "table {{.Name}}	{{.Status}}"
+NAME               STATUS
+kuat-akberen-app   Exited (143) Less than a second ago
+kuat-akberen-db    Up 57 seconds (healthy)
+
+
+$ docker compose start app
+ Container kuat-akberen-db Waiting 
+ Container kuat-akberen-db Healthy 
+ Container kuat-akberen-app Starting 
+ Container kuat-akberen-app Started 
+
+
+$ docker compose ps --format "table {{.Name}}	{{.Status}}"
+NAME               STATUS
+kuat-akberen-app   Up 12 seconds
+kuat-akberen-db    Up About a minute (healthy)
+
+
+$ curl -s http://localhost:8080/api/info
+{"project":"kuat-akberen-student-api","student":"Kuat Akberen","version":"1.0-kuat-akberen"}
+--- persistence: full restart of the stack, the volume is kept
+
+$ docker exec kuat-akberen-db sh -c 'psql -U $POSTGRES_USER -d $POSTGRES_DB -c "select * from students order by id"'
+ id | age |           email           |         name         
+----+-----+---------------------------+----------------------
+  1 |  20 | akberen.kuat@student.test | Kuat Akberen
+  2 |  22 | kuat.akberen@example.com  | Kuat Akberen Updated
+(2 rows)
+
+
+
+$ docker compose down
+ Container kuat-akberen-app Stopping 
+ Container kuat-akberen-app Stopped 
+ Container kuat-akberen-app Removing 
+ Container kuat-akberen-app Removed 
+ Container kuat-akberen-db Stopping 
+ Container kuat-akberen-db Stopped 
+ Container kuat-akberen-db Removing 
+ Container kuat-akberen-db Removed 
+ Network kuat-akberen-student-api_kuat-akberen-network Removing 
+ Network kuat-akberen-student-api_kuat-akberen-network Removed 
+
+
+$ docker volume ls --filter name=kuat-akberen
+DRIVER    VOLUME NAME
+local     kuat-akberen-gradle-cache
+local     kuat-akberen-student-api_kuat-akberen-pgdata
+
+
+$ docker compose up -d --no-build 2>&1 | tail -2
+ Container kuat-akberen-app Starting 
+ Container kuat-akberen-app Started 
+
+
+$ curl -s http://localhost:8080/api/students
+[{"id":1,"name":"Kuat Akberen","email":"akberen.kuat@student.test","age":20},{"id":2,"name":"Kuat Akberen Updated","email":"kuat.akberen@example.com","age":22}]
+--- rebuild after changing the version from 1.0 to 1.1
+
+$ git diff --stat -- build.gradle
+ build.gradle | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+
+$ DOCKER_BUILDKIT=0 docker build -t kuat-akberen-student-api:v1.1-kuat-akberen . | tail -2
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            BuildKit is currently disabled; enable it by removing the DOCKER_BUILDKIT=0
+            environment-variable.
+
+Successfully built b3655798b7f5
+Successfully tagged kuat-akberen-student-api:v1.1-kuat-akberen
+
+
+$ docker images kuat-akberen-student-api --format "table {{.Repository}}	{{.Tag}}	{{.Size}}	{{.CreatedAt}}"
+REPOSITORY                 TAG                 SIZE      CREATED AT
+kuat-akberen-student-api   v1.1-kuat-akberen   365MB     2026-10-30 18:30:19 +0500 +05
+kuat-akberen-student-api   v1.0-kuat-akberen   365MB     2026-10-30 18:26:43 +0500 +05
+
+
+$ docker compose up -d --no-build app 2>&1 | tail -2
+ Container kuat-akberen-app Starting 
+ Container kuat-akberen-app Started 
+
+
+$ curl -s http://localhost:8080/api/info
+{"project":"kuat-akberen-student-api","student":"Kuat Akberen","version":"1.1-kuat-akberen"}
+
+$ curl -s http://localhost:8080/api/students/count
+{"total":2}
