@@ -1,5 +1,6 @@
 package com.kuatakberen.studentapi;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,33 +26,24 @@ public class StudentController {
     public ResponseEntity<Student> getStudentById(@PathVariable Long id) {
         return studentService.getStudentById(id)
             .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+            .orElseThrow(() -> new StudentNotFoundException("Student not found with id: " + id));
     }
 
     @PostMapping
-    public ResponseEntity<Student> createStudent(@RequestBody Student student) {
+    public ResponseEntity<Student> createStudent(@Valid @RequestBody Student student) {
         Student created = studentService.createStudent(student);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student student) {
-        try {
-            return ResponseEntity.ok(studentService.updateStudent(id, student));
-        } catch (StudentNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Student> updateStudent(@PathVariable Long id, @Valid @RequestBody Student student) {
+        return ResponseEntity.ok(studentService.updateStudent(id, student));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, String>> deleteStudent(@PathVariable Long id) {
-        try {
-            studentService.deleteStudent(id);
-            return ResponseEntity.ok(Map.of("message", "Student with id " + id + " deleted successfully"));
-        } catch (StudentNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of("error", e.getMessage()));
-        }
+        studentService.deleteStudent(id);
+        return ResponseEntity.ok(Map.of("message", "Student with id " + id + " deleted successfully"));
     }
 
     @GetMapping("/count")
